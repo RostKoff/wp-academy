@@ -32,6 +32,9 @@ func AverageGrade(grades []int) int {
 // The percentage of attendance is represented as a
 // floating-point number ranging from 0 to 1.
 func AttendancePercentage(attendance []bool) float64 {
+	if len(attendance) == 0 {
+		return 0
+	}
 	attendanceNumber := 0.0
 	for _, wasPresent := range attendance {
 		if wasPresent {
@@ -52,39 +55,18 @@ func AttendancePercentage(attendance []bool) float64 {
 // If the student's attendance is below 80%, the final grade is
 // decreased by 1. If the student's attendance is below 60%, average
 // grade is 1 or project grade is 1, the final grade is 1.
-
-// !!! Can't decide which variant is more readable. Looking for some feedback. !!!
-// Variant 1
 func FinalGrade(s Student) int {
-	if s.Project == 1 || AttendancePercentage(s.Attendance) < 0.6 || AverageGrade(s.Grades) == 1 {
+	attendancePercentage := AttendancePercentage(s.Attendance)
+	averageGrade := float64(AverageGrade(s.Grades))
+	if s.Project == 1 || attendancePercentage < 0.6 || averageGrade == 1 {
 		return 1
 	}
-	finalGrade := (float64(s.Project) + float64(AverageGrade(s.Grades))) / 2.0
-	if AttendancePercentage(s.Attendance) < 0.8 {
+	finalGrade := (float64(s.Project) + averageGrade) / 2.0
+	if attendancePercentage < 0.8 {
 		finalGrade--
 	}
 	return int(math.Round(finalGrade))
 }
-
-// Variant 2
-// func FinalGrade(s Student) int {
-// 	if s.Project == 1 {
-// 		return 1
-// 	}
-// 	attendancePercentage := AttendancePercentage(s.Attendance)
-// 	if attendancePercentage < 0.6 {
-// 		return 1
-// 	}
-// 	averageGrade := AverageGrade(s.Grades)
-// 	if averageGrade == 1 {
-// 		return 1
-// 	}
-// 	finalGrade := (float64(s.Project) + float64(averageGrade)) / 2.0
-// 	if attendancePercentage < 0.8 {
-// 		finalGrade--
-// 	}
-// 	return int(math.Round(finalGrade))
-// }
 
 // GradeStudents returns a map of final grades for a given slice of
 // Student structs. The key is a student's name and the value is a
